@@ -5,17 +5,20 @@ Created on Wed May 17 07:41:21 2023
 @author: João Victor Barbosa
 """
 
+import psycopg2 as psy
 
-class ConexaoBanco:
-    def __init__(self, host, port, username, password, database):
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        self.database = database
-        self.string_conexao = f"host={self.host} port={self.port} user={self.username} password={self.password} dbname={self.database}"
+class AppBD:
+    
+    def abrirConexao(self):
+        try:
+            self.connection = psy.connect(user="postgres",
+                                          password="123321#Sobre2.",
+                                          host="127.0.0.1",
+                                          port="5432",
+                                          database="projectPyhtonGUI")
+        except (Exception, psy.Error) as error:
+            if(self.connection):
+                print("Falha ao se conectar ao Banco de Dados", error)
+        return self.connection
 
-# Exemplo de utilização
-dadosConexao = ConexaoBanco("127.0.0.1", "5432", "postgres", "123321#Sobre2.", "projectPyhtonGUI")
 
-dadosConexao = dadosConexao.string_conexao
