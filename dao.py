@@ -28,12 +28,6 @@ class DAO:
             
         except (Exception, psy.Error) as  error:
             print("Erro na recuperação de dados", error)
-            
-        finally:   
-            if(self.connection):
-                cursor.close()
-                self.connection.close()
-                print("A conexão foi encerrada")
                 
         return registros
     
@@ -55,11 +49,11 @@ class DAO:
         except (Exception, psy.Error) as error:
             print("Falha ao inserir o registro na tabela", error)
         
-        finally:   
-            if(self.connection):
+        finally:
+            if cursor:
                 cursor.close()
-                self.connection.close()
-                print("A conexão foi encerrada")
+        
+                
         
     
     def atualizarProduto(self, codigo, nome, preco):
@@ -81,16 +75,47 @@ class DAO:
         except (Exception, psy.Error) as error:
             print("Falha ao atualizar o registro na tabela", error)
         
-        finally:   
-            if(self.connection):
+        finally:
+            if cursor:
                 cursor.close()
-                self.connection.close()
-                print("A conexão foi encerrada")
+        
+                
+    
+    def excluirProduto(self, codigo):
+        
+        try:
+            cursor = self.connection.cursor()
+        
+            sql="""DELETE FROM public."PRODUTO"
+               WHERE "CODIGO" = %s"""
+               
+            cursor.execute(sql, (codigo,))
+        
+            self.connection.commit()
+            
+            count = cursor.rowcount
+            print(count,"Registreo excluido com sucesso!" )
+            
+        except (Exception, psy.Error) as error:
+            print("Error na exclusão do produto", error)
+        
+        finally:
+            if cursor:
+                cursor.close()
+        
+        
+    
+    def fecharConexao(self):
+      if self.connection:
+          self.connection.close()
+          print("A conexão foi encerrada")
             
                 
     
     
-dao = DAO()  # Criar uma instância da classe DAO
-# dao.recuperarProdutos()  # Chamar o método recuperarDados() na instância criada
+#dao = DAO()  # Criar uma instância da classe DAO
+#dao.recuperarProdutos()  # Chamar o método recuperarDados() na instância criada
 # dao.inserirProduto(2, "Morango", 8.90)
-dao.atualizarProduto(2, "Beterraba", 7.90)
+# dao.atualizarProduto(2, "Beterraba", 7.90)
+# dao.excluirProduto(2)
+
